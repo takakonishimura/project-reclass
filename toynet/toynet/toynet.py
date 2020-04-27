@@ -1,4 +1,4 @@
-from toytopo import ToyTopo
+from toynet.toytopo import ToyTopo
 from toydiagram.network import ToyNetDiagram, ToySubnet, ToyNetNode
 from toydiagram.nodes.switch import Switch
 from toydiagram.nodes.host import Host

@@ -1,5 +1,5 @@
-from toynet import ToyNet
-from toytopo import ToyTopo
+from toynet.toynet import ToyNet
+from toynet.toytopo import ToyTopo
 
 def run():
     "Create Mininet & Visualize it"

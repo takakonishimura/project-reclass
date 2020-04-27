@@ -1,5 +1,4 @@
 #!/bin/bash
-cd toynet
 
 echo 'TOYNET LOG---- cleaning any previous runs'
 sudo python3 clean_toynet.py
