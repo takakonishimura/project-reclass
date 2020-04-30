@@ -19,7 +19,7 @@ Here are [some wireframe designs](https://docs.google.com/presentation/d/1qBIG4n
 #### Some bonus features include:
 * Protect the user from typos or invalid configurations
 * Provide a fully featured interface to the Mininet CLI
-* Handle multiple users without a noticable delay as a web hosted service
+* Handle multiple users without a noticable delay as a publicly-hosted web service for demonstration purposes
 * Host accounts and record configurations per user to reinstantiate in the future
 
 # ToyNet System Design
@@ -39,32 +39,29 @@ After exploring neat repositories and recieving some recommendations from others
 
 ## Frontend
 
-[React](https://reactjs.org) is a JavaScript library for building component-based user interfaces with declarative views. We have 3 basic components in ToyNet's MVP:
+[React](https://reactjs.org) is a JavaScript library for building component-based user interfaces with declarative views. We have three basic components in ToyNet's MVP:
 * network visualization (image)
 * text interface to construct netowrk configurations
 * text interface to interact directly with the Mininet instance
 
-Each component contains how to render the component based on state data as well as a controller to alter the state. The controllers will take user input and communicate with the backend on behalf of the component via pre-defined URL routes. It then updates the application with the returned results.
+Each component contains a controller which manages state as well as JSX to describe how to render the state data. The controllers take user input and communicate with the backend on behalf of the component via pre-defined URL routes. They then update the application with the returned results.
 
 These components communicate state to each other using [Redux](https://redux.js.org), a state container for JavaScript which centralizes an application's state and logic rather than dispersing that information in the separate components.
 
 ## Backend
 
-[Django](https://www.djangoproject.com) is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. Our service takes a network configuration and returns a PNG image representing current network as well as a session key. The session key is used by the frontend to indicate the Mininet instance with which to execute follow-up commands. In the first implementation, this stateful service handles one instance at a time; creating and launching a new network implies killing the currently running instance.
+[Django](https://www.djangoproject.com) is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. ToyNet's backend service takes a network configuration and returns a PNG image representing the current network as well as a session key. The session key is used by the frontend to indicate the Mininet instance within which to execute subsequent commands. In the first implementation, this stateful service handles one instance at a time; creating and launching a new network requires killing the currently running instance.
 
 The following steps describe how the backend handles network creation and updates:
 1. The service creates an intermediary representation from the Mininet state to feed into Diagrams.
-2. This intermediate state computes subnets and run some validations.
+2. This intermediate state computes subnets and runs some validations.
 3. Diagrams generates a PNG file by translating the intermediate state into a series of commands in the Diagrams DSL.
-
-There is no decision yet on what should occur if the mininet instance goes into a error state. Should the service propagate the error message respawn an identical configuration?
 
 ## Thoughts for Bonus Features:
 
-* If we have multiple concurrent users as in a web application setup, destroying the current mininet session to spawn a new session would result in terminating one user's session early to service another user.
-* To enable users to create an account and save past network designs, we must store each configuration they create in a database, most likely an RDS.
-* We can enable parallel processing to handle load, but as far as I have seen, Mininet isn't specifically designed to run multiple processes on a single computing enviornment, so there will need to be further research on distributing within a single worker node.
-* Distributing across instances sounds straight forward but costly. If past network designs are accessible, we must take proper precautions when a single user accesses the network from different devices or browser tabs. The workers will need to be stateless.
+* In a web application setup, we cannot predict when and how many users will want to try this product, so we must support concurrent users.
+* If past network designs are accessible, we must take proper precautions when a single user accesses the network from different devices or browser tabs.
+* To enable users to create an account and save past network designs, we must store each configuration they create in a database.
 
 # Basic Wireframes
 
