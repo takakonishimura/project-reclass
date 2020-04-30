@@ -1,14 +1,24 @@
-# Requirements
+# Introduction
+
+Most of our students do not have access to internet during or between classes, and many have never had hands-on experience with networks. This makes learning the Network+ curriculum a challenge of the imagination.
+
+What if we could run an internet simulation on a single host which can run basic system administrator capabilities on a variety of emulated devices? We can run that simulation in a virtual machine and interact with it through a local instance of the web applicaiton.
+
+ToyNet combines the network emulation capabilities of [Mininet](https://github.com/mininet/mininet) with the visualization capabilities of mingrammer's [Diagrams](https://github.com/mingrammer/diagrams), which was originaly built for system architecture diagrams of cloud infrastructure! For now we are just adding new hardware entities and using the "Cluster" feature for subnets. The technology stack consists of a React frontend hooked up to a Django backend.
+
+Here are [some wireframe designs](https://docs.google.com/presentation/d/1qBIG4n3aiZ1wWQHOhJnE9b4o7gJcFZxrZSS6WbfhKyI/edit?usp=sharing) of different phases of the product.
+
+# Technical Requirements
 
 #### As a minimum viable product, ToyNet must be able to:
-* Define a basic network configuration of routers, switches, hosts (no modern devices like switch-routers)
+* Define a basic network configuration with traditional devices such as routers, switches, and hosts 
 * Visualize the defined network configuration
-* Demonstrate responses to simple unix commandline interactions made to specified hosts (includes communication with other hosts on the network)
-* Run without access to internet (prison)
+* Demonstrate responses to simple Linux commandline interactions made to specified hosts (includes communication with other hosts on the network)
+* Run without internet access (for example: in a prison)
 
 #### Some bonus features include:
 * Protect the user from typos or invalid configurations
-* Use the exact syntax of a real unix system (`host1> ping host2` instead of `mininet> host1 ping host2`)
+* Provide a fully featured interface to the Mininet CLI
 * Handle multiple users without a noticable delay as a web hosted service
 * Host accounts and record configurations per user to reinstantiate in the future
 
@@ -16,41 +26,45 @@
 
 ## MVP
 
-My initial design for this system is very simple: a full-stack web application with a React frontend and Django backend running on Ubuntu. Since most of our instructors use a Mac or Windows machine, it will most likely run on an a virtual machine.
+My initial design for this system is very simple: a full-stack web application with a React frontend and Django backend running on Ubuntu. Since most of our instructors use a Mac or Windows machine, it will most likely run on a virtual machine.
 
-#### Backend Technologies
+### Leveraged Technologies
 
 After exploring neat repositories and recieving some recommendations from others, I identified two pre-existing projects to help me accomplish these requirements:
 
-* [Mininet](https://github.com/mininet/mininet) emulates a complete network of hosts, links, and switches on a single machine. Stanford researchers Bob Lanz and Brandon Heller initially implemented Mininet to [research](https://github.com/mininet/mininet/wiki/Publications) Software Defined Networks (SDNs).
-* [Diagrams](https://diagrams.mingrammer.com) neatly organizes and stylizes cloud architecture diagrams. Implimented by MinJae Kwon, Diagrams is now GitPitch is a markdown presentation service for developers. Diagrams is now integrated as [Cloud Diagram Widget](https://gitpitch.com/docs/diagram-features/cloud-diagrams/) of [GitPitch](https://gitpitch.com/).
+* [Mininet](https://github.com/mininet/mininet) emulates a complete network of hosts, links, and switches on a single machine. Stanford researchers Bob Lanz and Brandon Heller initially implemented Mininet to [research](https://github.com/mininet/mininet/wiki/Publications) software defined networks.
+* [Diagrams](https://diagrams.mingrammer.com) by MinJae Kwon neatly organizes and stylizes cloud architecture diagrams. It is now integrated as the [Cloud Diagram Widget](https://gitpitch.com/docs/diagram-features/cloud-diagrams/) of [GitPitch](https://gitpitch.com/), a markdown presentation service for developers.
 
 <img src="/images/toynet_architecture.png" />
 
 ## Frontend
 
-We have 3 basic components:
+[React](https://reactjs.org) is a JavaScript library for building component-based user interfaces with declarative views. We have 3 basic components in ToyNet's MVP:
 * network visualization (image)
 * text interface to construct netowrk configurations
 * text interface to interact directly with the Mininet instance
 
+Each component contains how to render the component based on state data as well as a controller to alter the state. The controllers will take user input and communicate with the backend on behalf of the component via pre-defined URL routes. It then updates the application with the returned results.
+
+These components communicate state to each other using [Redux](https://redux.js.org), a state container for JavaScript which centralizes an application's state and logic rather than dispersing that information in the separate components.
+
 ## Backend
 
-The service takes a network configuration and returns a PNG image representing current network as well as a session key. The session key is used by the frontend to indicate the Mininet instance with which to execute follow-up commands. In the first implementation, this stateful service handles one instance at a time; creating and launching a new network implies killing the currently running instance.
+[Django](https://www.djangoproject.com) is a high-level Python Web framework that encourages rapid development and clean, pragmatic design. Our service takes a network configuration and returns a PNG image representing current network as well as a session key. The session key is used by the frontend to indicate the Mininet instance with which to execute follow-up commands. In the first implementation, this stateful service handles one instance at a time; creating and launching a new network implies killing the currently running instance.
 
-During network creation and updates:
+The following steps describe how the backend handles network creation and updates:
 1. The service creates an intermediary representation from the Mininet state to feed into Diagrams.
-2. This intermediate state will compute subnets and run some validations.
-3. A diagram will be generated by translating the intermediate state into a series of commands in the Diagrams DSL.
+2. This intermediate state computes subnets and run some validations.
+3. Diagrams generates a PNG file by translating the intermediate state into a series of commands in the Diagrams DSL.
 
 There is no decision yet on what should occur if the mininet instance goes into a error state. Should the service propagate the error message respawn an identical configuration?
 
 ## Thoughts for Bonus Features:
 
-1. If we have multiple concurrent users as in a web application setup, destroying the current mininet session to spawn a new session would result in terminating one user's session early to service another user.
-2. To enable users to create an account and save past network designs, we must store each configuration they create in a database, most likely an RDS.
-3. We can enable parallel processing to handle load, but as far as I have seen, Mininet isn't specifically designed to run multiple processes on a single computing enviornment, so there will need to be further research on distributing within a single worker node.
-4. Distributing across instances sounds straight forward but costly. If past network designs are accessible, we must take proper precautions when a single user accesses the network from different devices or browser tabs. The workers will need to be stateless.
+* If we have multiple concurrent users as in a web application setup, destroying the current mininet session to spawn a new session would result in terminating one user's session early to service another user.
+* To enable users to create an account and save past network designs, we must store each configuration they create in a database, most likely an RDS.
+* We can enable parallel processing to handle load, but as far as I have seen, Mininet isn't specifically designed to run multiple processes on a single computing enviornment, so there will need to be further research on distributing within a single worker node.
+* Distributing across instances sounds straight forward but costly. If past network designs are accessible, we must take proper precautions when a single user accesses the network from different devices or browser tabs. The workers will need to be stateless.
 
 # Basic Wireframes
 

@@ -8,25 +8,30 @@ We also develop hands-on labs, including a visual network simulation tool to dem
 
 Learn more by [visiting our website](https://www.reclassltd.com)!
 
-# ToyNet
+# Projects
+
+## ToyNet
 
 [Official Design Document](https://github.com/takakonishimura/project-reclass/blob/master/toynet/README.md)
 
-Most of our students do not have access to internet during or between classes, and many have never had hands-on experience with networks. This makes learning the Network+ curriculum a challenge of the imagination.
+Most of our students do not have access to internet during or between classes, and many have never had hands-on experience with networks. This makes learning the Network+ curriculum a challenge of the imagination. What if we could run an internet simulation on a single host which can run basic system administrator capabilities on a variety of emulated devices?
 
-What if we could run an internet simulation on a single host which can run basic system administrator capabilities on a variety of emulated devices? We can run that simulation in a virtual machine and interact with it through a local instance of the web applicaiton.
+ToyNet combines the network emulation capabilities of [Mininet](https://github.com/mininet/mininet) with the visualization capabilities borrowed from mingrammer's [Diagrams](https://github.com/mingrammer/diagrams) which was originaly built for system architecture diagrams of cloud infrastructure! The technology stack consists of a React frontend hooked up to a Django backend.
 
-ToyNet combines the network emulation capabilities of [mininet](https://github.com/mininet/mininet) with the visualization capabilities borrowed from [mingrammer's diagrams](https://github.com/mingrammer/diagrams) which was originaly built for system architecture diagrams of cloud infrastructure! For now we are just adding new hardware entities and using the "Cluster" feature for subnets. The technology stack is React front-end hooked up to a Django backend.
+## Other Projects Up for Grabs
 
-Checkout [some wireframe designs](https://docs.google.com/presentation/d/1qBIG4n3aiZ1wWQHOhJnE9b4o7gJcFZxrZSS6WbfhKyI/edit?usp=sharing) of the finished product!
+We still have lots of other projects we want to do! We are currently looking for volunteers to revamp our website and get started on a super-fun mobile game that can help active duty service members get a head start with the curriculum.
 
-# Other Projects Up for Grabs
+<kbd> <img src="/images/projectidea_mobilegame.png" height=250 width=400/> </kbd>
 
-Check out other [project ideas](https://docs.google.com/presentation/d/1HbHX3fKuG7k29GI0qZmr_EwTkXLa7rXTcQkzSnAAVvM/edit?usp=sharing) we have.
-Reach out to [Tay](https://www.linkedin.com/in/takakonishimura/) if you want to contribute!
+Check out these [project ideas](https://docs.google.com/presentation/d/1HbHX3fKuG7k29GI0qZmr_EwTkXLa7rXTcQkzSnAAVvM/edit?usp=sharing), and reach out to [Tay](https://www.linkedin.com/in/takakonishimura/) if you want to contribute!
 
 # Curriculum
+
+## Lessons
+
 ### Lesson 1
+<kbd> <img src="/images/curriculum_tcpip.png" height=250 width=400/> </kbd>
 
 * [Motivation](https://docs.google.com/presentation/d/1nPn9-x084IkWfUkYTADpa7UBuvugRWMr0vZFDOvDxSE/edit?usp=sharing)
 * [OSI Model - Layer 1](https://docs.google.com/presentation/d/1kW0q9nSdCVy13571qeL9lkHH2Kh7uUr3mG4sjzSLHNM/edit?usp=sharing)
@@ -38,6 +43,12 @@ Reach out to [Tay](https://www.linkedin.com/in/takakonishimura/) if you want to 
 * [Ethernet](https://docs.google.com/presentation/d/1GzojYw-sG3E9R6csR61zESMA26fJFK_3FasYG-Ok7_o/edit)
 
 ### Lesson 2
+<kbd> <img src="/images/curriculum_icmp.png" height=250 width=400/> </kbd>
 
 * [CIDR & ARP](https://docs.google.com/presentation/d/1FdFrl565odk45nBlvgMh3zVLkWaSMrjy-wsZpgBb0hw/edit)
 * [ICMP](https://docs.google.com/presentation/d/1mio4J6XV2vNstiRLByvIS_viKaDUgCO6HKCNDNlwIWU/edit)
+
+## Missions
+<kbd> <img src="/images/curriculum_mission.png" height=250 width=400/> </kbd>
+
+* [Designing a Physical Network](https://docs.google.com/presentation/d/1fpG_s0Pqr4XgWSZrYC2FtDH_dzbDq5GSbDORqG25Igc/edit?usp=sharing)
