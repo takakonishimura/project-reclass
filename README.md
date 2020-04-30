@@ -10,6 +10,8 @@ Learn more by [visiting our website](https://www.reclassltd.com)!
 
 # ToyNet
 
+[Official Design Document](https://github.com/takakonishimura/project-reclass/blob/master/toynet/README.md)
+
 Most of our students do not have access to internet during or between classes, and many have never had hands-on experience with networks. This makes learning the Network+ curriculum a challenge of the imagination.
 
 What if we could run an internet simulation on a single host which can run basic system administrator capabilities on a variety of emulated devices? We can run that simulation in a virtual machine and interact with it through a local instance of the web applicaiton.
