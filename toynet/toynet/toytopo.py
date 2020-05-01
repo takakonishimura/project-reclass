@@ -23,16 +23,29 @@ class ToyTopo(Topo):
 
     def build(self, **_opts):
 
-        defaultIP = '192.168.1.1/24'  # IP address for r0-eth1
-        router = self.addNode('r0', cls=LinuxRouter, ip=defaultIP)
+        rISP_IP_0 = '192.168.0.1/24'  # IP address for risp-eth0
+        rISP_IP_1 = '192.168.1.1/24'  # IP address for risp-eth1
+        rISP_IP_2 = '192.168.2.1/24'  # IP address for risp-eth2
+        routerISP = self.addNode('risp', cls=LinuxRouter, ip=rISP_IP_0)
+
+        r1_IP_0 = '192.168.1.1/24'  # IP address for r1-eth0
+        r1_IP_1 = '192.168.1.2/24'  # IP address for r1-eth1
+        r1 = self.addNode('r1', cls=LinuxRouter, ip=r1_IP_0)
+
+        r2_IP_0 = '172.16.0.1/12'  # IP address for r2-eth0
+        r2_IP_1 = '172.16.0.2/12'  # IP address for r2-eth1
+        r2 = self.addNode('r2', cls=LinuxRouter, ip=r2_IP_0)
 
         s1, s2, s3, s4 = [self.addSwitch(s) for s in ('s1', 's2', 's3', 's4')]
 
-        self.addLink(router, s1, intfName2='r0-eth1',
-                     params2={'ip': defaultIP})  # for clarity
-        self.addLink(router, s2, intfName2='r0-eth2',
-                     params2={'ip': '172.16.0.1/12'})
-        # TODO @taytay: diagram flow is awkward when parameters are reversed
+        self.addLink(routerISP, r1, intfName2='risp-eth1',
+                     params2={'ip': rISP_IP_1})  # for clarity
+        self.addLink(routerISP, r2, intfName2='risp-eth2',
+                     params2={'ip': rISP_IP_2})  # for clarity
+        self.addLink(r1, s1, intfName2='r1-eth1',
+                     params2={'ip': r1_IP_1})  # for clarity
+        self.addLink(r2, s2, intfName2='r2-eth1',
+                     params2={'ip': r2_IP_1})
         self.addLink(s2, s3)
         self.addLink(s2, s4)
 

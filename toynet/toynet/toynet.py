@@ -9,50 +9,50 @@ from mininet.net import Mininet
 from mininet.cli import CLI
 
 class ToyNet():
-  def __init__(self, topology=ToyTopo()):
-    self.mininet = Mininet(topo=topology)
+    def __init__(self, topology=ToyTopo()):
+        self.mininet = Mininet(topo=topology)
+        self.diagramTree = DiagramTree(self.deviceNamesByType())
 
-    self.nodes = {
-      'routers': self.getRouterNames(),
-      'switches': self.getSwitchNames(),
-      'links': self.getLinkPairs()
-    }
+    def visualize(self):
+        nodes = dict()
+        with ToyNetDiagram("Toy Network", show=False):
 
-    diagramTree = DiagramTree(self.nodes)
-    self.subnets = diagramTree.getAllSubnets()
-
-
-  def visualize(self):
-    nodes = dict()
-    with ToyNetDiagram("Toy Network", show=False):
-        with ToySubnet("gateway"):
-            for deviceName in self.nodes['routers']:
+            # devices
+            for deviceName in self.diagramTree.routers:
                 nodes[deviceName] = Router(deviceName)
 
-        for subnet in self.subnets:
-            with ToySubnet(subnet[0]):
-                for deviceName in subnet:
-                    if deviceName.startswith('s'):
-                        nodes[deviceName] = Switch(deviceName)
-                    elif deviceName.startswith('h'):
-                        nodes[deviceName] = Host(deviceName)
+            for (i, subnet) in enumerate(self.diagramTree.subnets):
+                with ToySubnet("subnet" + str(i)):
+                    for deviceName in subnet.switches:
+                            nodes[deviceName] = Switch(deviceName)
+                    for deviceName in subnet.hosts:
+                            nodes[deviceName] = Host(deviceName)
                     else:
-                        print('device is neither a switch nor a router: ', deviceName)
-                        # exception?
+                        print('__ERROR__ device is neither a switch nor a router: ', deviceName)
 
-        for (n1, n2) in self.nodes['links']:
-            nodes[n1] >> nodes[n2]
+            # cables
+            for (n1, n2) in self.diagramTree.links:
+                nodes[n1] >> nodes[n2]
 
-  def interact(self):
-    self.mininet.start()
-    CLI( self.mininet )
-    self.mininet.stop()
+            for subnet in self.diagramTree.subnets:
+                for (n1, n2) in subnet.links:
+                    nodes[n1] >> nodes[n2]
 
-  def getRouterNames(self):
-    return [h.name for h in self.mininet.hosts if h.name.startswith('r')]
+    def interact(self):
+        self.mininet.start()
+        CLI( self.mininet )
+        self.mininet.stop()
 
-  def getSwitchNames(self):
-    return [s.name for s in self.mininet.switches if s.name.startswith('s')]
+    def deviceNamesByType(self):
+        devices = {
+            'routers': list(),
+            'switches': [s.name for s in self.mininet.switches if s.name.startswith('s')],
+            'hosts': list(),
+            'links': [(l.intf1.node.name, l.intf2.node.name) for l in self.mininet.links]
+        }
 
-  def getLinkPairs(self):
-    return [(l.intf1.node.name, l.intf2.node.name) for l in self.mininet.links]
+        for device in self.mininet.hosts:
+            if device.name.startswith('r'): devices['routers'].append(device.name)
+            elif device.name.startswith('h'): devices['hosts'].append(device.name)
+
+        return devices
