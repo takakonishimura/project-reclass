@@ -1,0 +1,3 @@
+[submodule "toynet/mininet"]
+	path = toynet/mininet
+	url = git://github.com/mininet/mininet
