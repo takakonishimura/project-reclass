@@ -27,8 +27,6 @@ class ToyNet():
                             nodes[deviceName] = Switch(deviceName)
                     for deviceName in subnet.hosts:
                             nodes[deviceName] = Host(deviceName)
-                    else:
-                        print('__ERROR__ device is neither a switch nor a router: ', deviceName)
 
             # cables
             for (n1, n2) in self.diagramTree.links:

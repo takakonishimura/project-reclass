@@ -38,16 +38,16 @@ class ToyTopo(Topo):
 
         s1, s2, s3, s4 = [self.addSwitch(s) for s in ('s1', 's2', 's3', 's4')]
 
-        self.addLink(routerISP, r1, intfName2='risp-eth1',
-                     params2={'ip': rISP_IP_1})  # for clarity
-        self.addLink(routerISP, r2, intfName2='risp-eth2',
-                     params2={'ip': rISP_IP_2})  # for clarity
-        self.addLink(r1, s1, intfName2='r1-eth1',
-                     params2={'ip': r1_IP_1})  # for clarity
-        self.addLink(r2, s2, intfName2='r2-eth1',
-                     params2={'ip': r2_IP_1})
-        self.addLink(s2, s3)
-        self.addLink(s2, s4)
+        self.addLink(routerISP, r1, intfName1='risp-eth1', intfName2='r1-eth0',
+                     params1={'ip': rISP_IP_1}, params2={'ip': r1_IP_1})  # for clarity
+        self.addLink(routerISP, r2, intfName1='risp-eth2', intfName2='r2eth0',
+                     params1={'ip': rISP_IP_2}, params2={'ip': r1_IP_1})  # for clarity
+        self.addLink(r1, s1, intfName1='r1-eth1', intfName2='s1-eth0',
+                     params1={'ip': r1_IP_1})  # for clarity
+        self.addLink(r2, s2, intfName1='r2-eth1', intfName2='s2-eth0',
+                     params1={'ip': r2_IP_1})
+        self.addLink(s2, s3, intfName1='s2-eth1', intfName2='s3-eth0')
+        self.addLink(s2, s4, intfName1='s2-eth2', intfName2='s4-eth0')
 
         h1 = self.addHost('h1', ip='192.168.1.100/24',
                           defaultRoute='via 192.168.1.1')
