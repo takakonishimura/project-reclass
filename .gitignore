@@ -2,6 +2,7 @@
 toynet/toy_network.png
 infra/toynet/terraform/terraform.tfstate
 infra/toynet/terraform/.terraform/**
+infra/toynet/terraform/terraform.tfstate.backup
 
 # Editors
 .vscode/

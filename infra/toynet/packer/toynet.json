@@ -8,27 +8,21 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-2",
-    "source_ami_filter": {
-      "filters": {
-        "virtualization-type": "hvm",
-        "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
-        "root-device-type": "ebs"
-      },
-      "owners": ["099720109477"],
-      "most_recent": true
-    },
+    "source_ami": "ami-0a040c35ca945058a",
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_name": "toynet {{timestamp}}"
   }],
   "provisioners": [{
     "type": "shell",
+    "inline": ["/usr/bin/cloud-init status --wait"]
+  }, {
+    "type": "shell",
     "inline": [
       "sudo apt-get update",
       "sudo apt-get -y install graphviz",
       "sudo apt-get -y install python3-pip",
-      "pip3 install diagrams==0.9.0",
-      "exit 0"
+      "pip3 install diagrams==0.9.0"
     ]
   }]
 }
