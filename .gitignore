@@ -1,5 +1,7 @@
 # ToyNet-Specific Files
 toynet/toy_network.png
+infra/toynet/terraform/terraform.tfstate
+infra/toynet/terraform/.terraform/**
 
 # Editors
 .vscode/
