@@ -8,6 +8,11 @@
 
 In ToyNet, we install mingrammer's `Diagrams` on top of `Ubutu 18.04`. Packer brings up an EC2 instance of the Ubuntu image. The first shell script halts execution until the EC2 instance has finished system updates before executing the next shell script which installs `graphviz` and `python3-pip` as underlying dependencies to the `Diagrams` Python Package. Packer automatically terminates the EC2 instance and registers the new AMI with your account.
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 6f32db3... Document: infrastructure context and dev env notes
 * What is the desired architecture (include visuals)?
 
 ### Longerm Orchestration Plans
