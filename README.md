@@ -40,13 +40,19 @@ Check out these [project ideas](https://docs.google.com/presentation/d/1HbHX3fKu
 * [OSI Model - Layer 4](https://docs.google.com/presentation/d/1OJms8_PDfjXeioJWyKMsEXlM-F2tYXNLWB7zg6r7u3c/edit?usp=sharing)
 * [OSI Model - Layers 5-7](https://docs.google.com/presentation/d/1YTSIraYt5Md32wzwyfd9sdlo3a6dnA_XC98egMnsWyY/edit?usp=sharing)
 * [Topologies](https://docs.google.com/presentation/d/1DlQ4Yp_JVCewlopG2UI4_tlp29diwfzPTUKRMmyhXEY/edit?usp=sharing)
-* [Ethernet](https://docs.google.com/presentation/d/1GzojYw-sG3E9R6csR61zESMA26fJFK_3FasYG-Ok7_o/edit)
+* [Ethernet](https://docs.google.com/presentation/d/1GzojYw-sG3E9R6csR61zESMA26fJFK_3FasYG-Ok7_o/edit?usp=sharing)
 
 ### Lesson 2
 <kbd> <img src="/images/curriculum_icmp.png" height=250 width=400/> </kbd>
 
-* [CIDR & ARP](https://docs.google.com/presentation/d/1FdFrl565odk45nBlvgMh3zVLkWaSMrjy-wsZpgBb0hw/edit)
-* [ICMP](https://docs.google.com/presentation/d/1mio4J6XV2vNstiRLByvIS_viKaDUgCO6HKCNDNlwIWU/edit)
+* [CIDR & ARP](https://docs.google.com/presentation/d/1FdFrl565odk45nBlvgMh3zVLkWaSMrjy-wsZpgBb0hw/edit?usp=sharing)
+* [ICMP](https://docs.google.com/presentation/d/1mio4J6XV2vNstiRLByvIS_viKaDUgCO6HKCNDNlwIWU/edit?usp=sharing)
+
+### Conceptual Sketches
+<kbd> <img src="/images/curriculum_dns.png" height=250 width=400/> </kbd>
+
+* [DNS](https://docs.google.com/presentation/d/1iaJzNIKesXUqTu_Sn9yjnCJrREQxdfRPStbdiLqCWR0/edit?usp=sharing)
+* [Digital Signatures](https://docs.google.com/presentation/d/1MBAgkKAzT1oNOBgz_y9JNEzEDG8Ctej0e7yZ8ol4LJk/edit?usp=sharing)
 
 ## Missions
 <kbd> <img src="/images/curriculum_mission.png" height=250 width=400/> </kbd>
