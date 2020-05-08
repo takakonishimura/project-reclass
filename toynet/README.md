@@ -1,12 +1,12 @@
 # Introduction
 
+[High-Fidelity Visualizations](https://docs.google.com/presentation/d/1qBIG4n3aiZ1wWQHOhJnE9b4o7gJcFZxrZSS6WbfhKyI/edit)
+
 Most of our students do not have access to internet during or between classes, and many have never had hands-on experience with networks. This makes learning the Network+ curriculum a challenge of the imagination.
 
 What if we could run an internet simulation on a single host which can run basic system administrator capabilities on a variety of emulated devices? We can run that simulation in a virtual machine and interact with it through a local instance of the web applicaiton.
 
 ToyNet combines the network emulation capabilities of [Mininet](https://github.com/mininet/mininet) with the visualization capabilities of mingrammer's [Diagrams](https://github.com/mingrammer/diagrams), which was originaly built for system architecture diagrams of cloud infrastructure! For now we are just adding new hardware entities and using the "Cluster" feature for subnets. The technology stack consists of a React frontend hooked up to a Django backend.
-
-Here are [some wireframe designs](https://docs.google.com/presentation/d/1qBIG4n3aiZ1wWQHOhJnE9b4o7gJcFZxrZSS6WbfhKyI/edit?usp=sharing) of different phases of the product.
 
 # Technical Requirements
 

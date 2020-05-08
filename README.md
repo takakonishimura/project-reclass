@@ -12,7 +12,7 @@ Learn more by [visiting our website](https://www.reclassltd.com)!
 
 ## ToyNet
 
-[Official Design Document](https://github.com/takakonishimura/project-reclass/blob/master/toynet/README.md)
+[Official Design Document](https://github.com/takakonishimura/project-reclass/blob/master/toynet/README.md) | [Current usage of Terraform & Packer](https://github.com/takakonishimura/project-reclass/blob/master/infra/toynet/README.md) | [How to Get Started](https://github.com/takakonishimura/project-reclass/blob/master/toynet/ONBOARDING.md)
 
 Most of our students do not have access to internet during or between classes, and many have never had hands-on experience with networks. This makes learning the Network+ curriculum a challenge of the imagination. What if we could run an internet simulation on a single host which can run basic system administrator capabilities on a variety of emulated devices?
 
@@ -27,8 +27,6 @@ We still have lots of other projects we want to do! We are currently looking for
 Check out these [project ideas](https://docs.google.com/presentation/d/1HbHX3fKuG7k29GI0qZmr_EwTkXLa7rXTcQkzSnAAVvM/edit?usp=sharing), and reach out to [Tay](https://www.linkedin.com/in/takakonishimura/) if you want to contribute!
 
 # Curriculum
-
-## Lessons
 
 ### Lesson 1
 <kbd> <img src="/images/curriculum_tcpip.png" height=250 width=400/> </kbd>
@@ -54,7 +52,7 @@ Check out these [project ideas](https://docs.google.com/presentation/d/1HbHX3fKu
 * [DNS](https://docs.google.com/presentation/d/1iaJzNIKesXUqTu_Sn9yjnCJrREQxdfRPStbdiLqCWR0/edit?usp=sharing)
 * [Digital Signatures](https://docs.google.com/presentation/d/1MBAgkKAzT1oNOBgz_y9JNEzEDG8Ctej0e7yZ8ol4LJk/edit?usp=sharing)
 
-## Missions
+# Missions
 <kbd> <img src="/images/curriculum_mission.png" height=250 width=400/> </kbd>
 
 * [Designing a Physical Network](https://docs.google.com/presentation/d/1fpG_s0Pqr4XgWSZrYC2FtDH_dzbDq5GSbDORqG25Igc/edit?usp=sharing)
