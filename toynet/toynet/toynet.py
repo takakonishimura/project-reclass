@@ -1,9 +1,9 @@
 from toynet.toytopo import ToyTopo
+from toydiagram.diagramTree import DiagramTree, DiagramGraph
 from toydiagram.network import ToyNetDiagram, ToySubnet, ToyNetNode
 from toydiagram.nodes.switch import Switch
 from toydiagram.nodes.host import Host
 from toydiagram.nodes.router import Router
-from toydiagram.diagramtree import DiagramTree
 
 from mininet.net import Mininet
 from mininet.cli import CLI
@@ -11,7 +11,25 @@ from mininet.cli import CLI
 class ToyNet():
     def __init__(self, topology=ToyTopo()):
         self.mininet = Mininet(topo=topology)
-        self.diagramTree = DiagramTree(self.deviceNamesByType())
+
+        print('__INFO___ Generating Diagram Graph from Configurations')
+        graph = DiagramGraph(self.deviceNamesByType(), 'risp')
+
+        print('__INFO___ Generating Diagram Tree from Diagram Graph')
+        self.diagramTree = graph.getDiagramTree()
+
+        print('routers: ' + str(self.diagramTree.routers))
+        print('free: ' + str(self.diagramTree.freeNodes))
+        print('primary: ' + str(self.diagramTree.primaryLinks))
+        print('secondary: ' + str(self.diagramTree.secondaryLinks))
+        print('unused: ' + str(self.diagramTree.unusedLinks))
+        print('')
+        for i, subnet in enumerate(self.diagramTree.subnets):
+            print('----subnet ' + str(i) + ':')
+            print('----switches: ' + str(subnet.switches))
+            print('----hosts: ' + str(subnet.hosts))
+            print('')
+
 
     def visualize(self):
         nodes = dict()
@@ -29,12 +47,11 @@ class ToyNet():
                             nodes[deviceName] = Host(deviceName)
 
             # cables
-            for (n1, n2) in self.diagramTree.links:
+            for (n1, n2) in self.diagramTree.primaryLinks:
                 nodes[n1] >> nodes[n2]
 
-            for subnet in self.diagramTree.subnets:
-                for (n1, n2) in subnet.links:
-                    nodes[n1] >> nodes[n2]
+            for (n1, n2) in self.diagramTree.secondaryLinks:
+                nodes[n1] >> nodes[n2]
 
     def interact(self):
         self.mininet.start()
