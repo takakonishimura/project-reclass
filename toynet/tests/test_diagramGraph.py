@@ -1,18 +1,20 @@
 import unittest
 
 from toydiagram.diagramTree import DiagramGraph, DeviceType
-from util.error import DiagramGraphError, TypeCheckError
+from util.error import DiagramGraphError
+
+import tests.util as testutil
 
 class TestDiagramGraphMethods(unittest.TestCase):
 
     def test_DiagramGraph__basicCreation_router(self):
-        nodes = {
-            'routers': ['r'],
-            'switches': [],
-            'hosts': [],
-            'links': []
-        }
-        graph = DiagramGraph(nodes)
+        config = testutil.makeToyTopoConfig(
+            ['r'],  # routers
+            [],     # switches
+            [],     # hosts
+            []      # links
+        )
+        graph = DiagramGraph(config)
 
         self.assertTrue(hasattr(graph,'root'))
         self.assertEqual(graph.devices['r'], graph.root)
@@ -21,13 +23,13 @@ class TestDiagramGraphMethods(unittest.TestCase):
         self.assertEqual(len(graph.devices.keys()), 1)
 
     def test_DiagramGraph__basicCreation_switch(self):
-        nodes = {
-            'routers': [],
-            'switches': ['s'],
-            'hosts': [],
-            'links': []
-        }
-        graph = DiagramGraph(nodes)
+        config = testutil.makeToyTopoConfig(
+            [],     # routers
+            ['s'],  # switches
+            [],     # hosts
+            []      # links
+        )
+        graph = DiagramGraph(config)
 
         self.assertTrue(hasattr(graph,'root'))
         self.assertEqual(graph.devices['s'], graph.root)
@@ -36,39 +38,39 @@ class TestDiagramGraphMethods(unittest.TestCase):
         self.assertEqual(len(graph.devices.keys()), 1)
 
     def test_DiagramGraph__basicCreation_host(self):
-        nodes = {
-            'routers': [],
-            'switches': [],
-            'hosts': ['h'],
-            'links': []
-        }
-        graph = DiagramGraph(nodes)
+        config = testutil.makeToyTopoConfig(
+            [],     # routers
+            [],     # switches
+            ['h'],  # hosts
+            []      # links
+        )
+        graph = DiagramGraph(config)
 
-        self.assertFalse(hasattr(graph,'root'))
+        self.assertIsNone(graph.root)
         self.assertEqual(len(graph.devices.keys()), 1)
         self.assertEqual(graph.devices['h'].deviceName, 'h')
         self.assertEqual(graph.devices['h'].deviceType, DeviceType.HOST)
 
     def test_DiagramGraph__badCreation_noDevices(self):
-        nodes = {
-            'routers': [],
-            'switches': [],
-            'hosts': [],
-            'links': []
-        }
+        config = testutil.makeToyTopoConfig(
+            [],     # routers
+            [],     # switches
+            [],     # hosts
+            []      # links
+        )
         
         with self.assertRaises(DiagramGraphError) as cm:
-            DiagramGraph(nodes)
+            DiagramGraph(config)
         self.assertEqual(cm.exception.message, 'network is missing devices')
 
     def test_DiagramGraph__routersCreation_links(self):
-        nodes = {
-            'routers': ['r1', 'r2', 'r3'],
-            'switches': [],
-            'hosts': [],
-            'links': [('r1', 'r2'), ('r1', 'r3')]
-        }
-        graph = DiagramGraph(nodes)
+        config = testutil.makeToyTopoConfig(
+            ['r1', 'r2', 'r3'],             # routers
+            [],                             # switches
+            [],                             # hosts
+            [('r1', 'r2'), ('r1', 'r3')]    # links
+        )
+        graph = DiagramGraph(config)
 
         self.assertEqual(len(graph.devices.keys()), 3)
         self.assertEqual(len(graph.devices['r1'].neighbors), 2)
@@ -76,13 +78,13 @@ class TestDiagramGraphMethods(unittest.TestCase):
         self.assertEqual(len(graph.devices['r3'].neighbors), 1)
         
     def test_DiagramGraph__routersCreation_dupLink(self):
-        nodes = {
-            'routers': ['r1', 'r2', 'r3'],
-            'switches': [],
-            'hosts': [],
-            'links': [('r1', 'r2'), ('r1', 'r2'),]
-        }
-        graph = DiagramGraph(nodes)
+        config = testutil.makeToyTopoConfig(
+            ['r1', 'r2', 'r3'],             # routers
+            [],                             # switches
+            [],                             # hosts
+            [('r1', 'r2'), ('r1', 'r2')]    # links
+        )
+        graph = DiagramGraph(config)
 
         self.assertEqual(len(graph.devices.keys()), 3)
         self.assertEqual(len(graph.devices['r1'].neighbors), 1)
@@ -90,25 +92,38 @@ class TestDiagramGraphMethods(unittest.TestCase):
         self.assertEqual(len(graph.devices['r3'].neighbors), 0)
 
     def test_DiagramGraph__routersCreation_badLink(self):
-        nodes = {
-            'routers': ['r1', 'r2', 'r3'],
-            'switches': [],
-            'hosts': [],
-            'links': [('r1', 'r0'),]
-        }
+        config = testutil.makeToyTopoConfig(
+            ['r1', 'r2', 'r3'],     # routers
+            [],                     # switches
+            [],                     # hosts
+            [('r1', 'r0')]          # links
+        )
 
         with self.assertRaises(DiagramGraphError) as cm:
-            graph = DiagramGraph(nodes)
+            DiagramGraph(config)
         self.assertEqual(cm.exception.message, 'Device r0 not found in Graph devices')
 
+    def test_DiagramGraph__routersCreation_routerHost(self):
+        config = testutil.makeToyTopoConfig(
+            ['r1'],             # routers
+            [],                 # switches
+            ['h1'],             # hosts
+            [('r1', 'h1')]      # links
+        )
+
+        with self.assertRaises(DiagramGraphError) as cm:
+            DiagramGraph(config)
+        self.assertEqual(cm.exception.message, 'Device type ROUTER cannot be neighbors with HOST (Entity: r1 [ROUTER, 0 neighbors])')
+
+
     def test_DiagramGraph__routersCreation_triangle(self):
-        nodes = {
-            'routers': ['r1', 'r2', 'r3'],
-            'switches': [],
-            'hosts': [],
-            'links': [('r1', 'r2'), ('r1', 'r3'), ('r2', 'r3')]
-        }
-        graph = DiagramGraph(nodes)
+        config = testutil.makeToyTopoConfig(
+            ['r1', 'r2', 'r3'],                         # routers
+            [],                                         # switches
+            [],                                         # hosts
+            [('r1', 'r2'), ('r1', 'r3'), ('r2', 'r3')]  # links
+        )
+        graph = DiagramGraph(config)
 
         self.assertEqual(len(graph.devices.keys()), 3)
         self.assertEqual(len(graph.devices['r1'].neighbors), 2)
