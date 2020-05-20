@@ -2,6 +2,7 @@ from typing import Set, Dict, List, Tuple, Any
 import functools
 
 from toydiagram.diagramEntity import DiagramEntity, DeviceType
+from toynet.xmlParser import ToyTopoConfig, RouterConfig, SwitchConfig, HostConfig
 
 from util.error import DiagramGraphError
 import util.typecheck as tc
@@ -14,7 +15,7 @@ class DiagramNode(DiagramEntity):
         It connects neighbors in a graph which is traversed to create the DiagramTree.
 
     Raises:
-        DiagramGraphError
+        DiagramGraphError, TypeCheckError
 
     Attributes:
         deviceName:     str -- name of host, switch, or router
@@ -177,13 +178,18 @@ class DiagramTree(DiagramEntity):
     def addUnusedLink(self, nm1: str, nm2: str) -> None: self.unusedLinks.append((nm1, nm2))
 
     def toString(self) -> str:
-        routers: str = '[' + functools.reduce(lambda rtrs,r: rtrs+','+r, self.routers) + ']'
-        subnets: str = '[' + functools.reduce(lambda sbnts,s: sbnts+','+s, map(lambda sbnt: sbnt.toShortString(), self.subnets)) + ']'
-
-        fr = self.free
-        free: str = '{ rtrs:' + str(len(fr['routers'])) + ',swts:' + str(len(fr['switches'])) + ',hosts:'+ str(len(fr['hosts'])) + ' }'
-        lnks: str = '{ prmry:' + len(self.primaryLinks) + ',scndry:' + len(self.secondaryLinks) + ' }'
-        return 'Tree: { rtrs: ' + routers + ' | sbnts: ' + subnets + ' | free: ' + free + ' | links: ' + lnks + '}'
+        output = 'Tree: {\n' + \
+            '    routers: ' + str(self.routers) + '\n' + \
+            '    free: ' + str(self.freeNodes) + '\n' + \
+            '    primary: ' + str(self.primaryLinks) + '\n' + \
+            '    secondary: ' + str(self.secondaryLinks) + '\n' + \
+            '    unused: ' + str(self.unusedLinks) + '\n\n'
+        for i, subnet in enumerate(self.subnets):
+            output = output + '    --subnet ' + str(i) + ':\n' + \
+                '    ------switches: ' + str(subnet.switches) + '\n' + \
+                '    ------hosts: ' + str(subnet.hosts) + '\n\n'
+        output = output + '}'
+        return output
 
     def toShortString(self) -> str:
         rtrs = str(len(self.routers))
@@ -203,7 +209,7 @@ class DiagramGraph(DiagramEntity):
         a DiagramTree which can be visualized for the end user.
 
     Raises:
-        DiagramGraphError
+        DiagramGraphError, TypeCheckError
 
     Attributes:
         devices:    Dict[str,DiagramNode] -- mapping of device names to DiagramNode objects
@@ -211,59 +217,22 @@ class DiagramGraph(DiagramEntity):
         links:      List[Tuple[Name,Name]] -- stored from input to check for unused links in Tree
     """
 
-    def __init__(self, devices: Dict[Name,List[Any]], root: Name=None):
-        """Input parameter "devices" takes following structure:
-            {
-                'routers': ['r0', 'r1'],
-                'switches': ['s1'],
-                'hosts': ['h1', 'h2'],
-                'links': [ ('r0','r1'), ('r1', 's1'), ('s1', 'h1'), ('s1', 'h2') ]
-            }
-            Input parameter "root" is an optional parameter which attempts to
-            preserve the user's intended tree structure (for example, we might use
-            the first node they defined, or allow them to select the node they wish
-            to traverse from explicitly).
+    def __init__(self, config: ToyTopoConfig, root: Name=None):
+        """Input: 
+            config: ToyTopoConfig -- contains parsed XML defining network topology.
         """
-        tc.inputTypeCheck(devices, 'devices', dict)
-        if 'routers' not in devices: raise DiagramGraphError('DiagramGraph input missing \'routers\'')
-        if 'switches' not in devices: raise DiagramGraphError('DiagramGraph input missing \'switches\'')
-        if 'hosts' not in devices: raise DiagramGraphError('DiagramGraph input missing \'hosts\'')
-        if 'links' not in devices: raise DiagramGraphError('DiagramGraph input missing \'links\'')
-        routers: List[Name] = devices['routers']
-        switches: List[Name] = devices['switches']
-        hosts: List[Name] = devices['hosts']
-        self.links: List[Tuple[Name,Name]] = devices['links']
+        tc.inputTypeCheck(config, 'config', ToyTopoConfig)
 
+        routers: List[Name] = [r for r in config.routers.keys()]
+        switches: List[Name] = [s for s in config.switches.keys()]
+        hosts: List[Name] = [h for h in config.hosts.keys()]
+
+        self.links: List[Tuple[Name,Name]] = [(l1.deviceName, l2.deviceName) for (l1, l2) in config.links]
         self.devices: Dict[Name,DiagramNode] = dict()
+
         self.__addAllDevicesToGraph(routers + switches + hosts)
         self.__addAllLinksToGraph(self.links)
-
-        if len(routers) > 0: 
-            print('__INFO___ network selected router as root: ' + routers[0])
-            self.root: DiagramNode = self.devices[routers[0]]
-        elif len(switches) > 0:
-            print('__WARN___ network has no routers; selected switch as root: ' + switches[0])
-            self.root: DiagramNode = self.devices[switches[0]]
-        elif len(hosts) > 0:
-            print('__WARN___ network has no routers or switches' )
-        else:
-            raise DiagramGraphError('network is missing devices')
-
-        if root is not None and hasattr(self.devices, root):
-            print('__INFO___ network was provided root: ' + root)
-            self.root: DiagramNode = self.devices[root]
-
-    def __addAllDevicesToGraph(self, deviceList: List[str]) -> None:
-        for name in deviceList: self.devices[name] = DiagramNode(name)
-
-    def __addAllLinksToGraph(self, links: List[Tuple[str,str]]) -> None:
-        for (nm1, nm2) in links: 
-            if nm1 not in self.devices:
-                raise DiagramGraphError('Device ' + nm1 + ' not found in Graph devices')                
-            elif nm2 not in self.devices:
-                raise DiagramGraphError('Device ' + nm2 + ' not found in Graph devices')
-            else:
-                self.devices[nm1].addNeighbor(self.devices[nm2])
+        self.root: DiagramNode = self.__getRootNode(config.root, routers, switches, hosts)
 
     def getDiagramTree(self) -> DiagramTree:
         """Traverse DiagramGraph to deduce DiagramTree"""
@@ -329,12 +298,17 @@ class DiagramGraph(DiagramEntity):
         # operate on descendants
         for neighbor in switch.neighbors:
             if neighbor.deviceName not in tree.visited:
-                tree.addPrimaryLink(switch.deviceName, neighbor.deviceName)
+                if neighbor.isRouter():
+                    # let the router algorithm find this link
+                    pass
+                elif neighbor.isSwitch():
+                    tree.addPrimaryLink(switch.deviceName, neighbor.deviceName)
 
-                if neighbor.isSwitch():
                     (tree, subnet) = self.findSwitchLinksAndHosts(tree, subnet, neighbor)
                 elif neighbor.isHost():
-                    # add host
+                    tree.addPrimaryLink(switch.deviceName, neighbor.deviceName)
+
+                    # mark visited here since there should be nothing to recurse
                     tree.visited.add(neighbor.deviceName)
                     subnet.addHost(neighbor.deviceName)
                 else:
@@ -345,6 +319,39 @@ class DiagramGraph(DiagramEntity):
 
         return (tree, subnet)
 
+    def __getRootNode(self,
+        root:str,
+        routers:List[RouterConfig],
+        switches:List[SwitchConfig],
+        hosts:List[HostConfig]
+        ) -> DiagramNode:
+        if root is not None and root in self.devices:
+            print('__INFO___ network was provided root: ' + root)
+            return self.devices[root]
+        else:
+            if len(routers) > 0: 
+                print('__INFO___ network selected router as root: ' + routers[0])
+                return self.devices[routers[0]]
+            elif len(switches) > 0:
+                print('__WARN___ network has no routers; selected switch as root: ' + switches[0])
+                return self.devices[switches[0]]
+            elif len(hosts) > 0:
+                print('__WARN___ network has no routers or switches' )
+            else:
+                raise DiagramGraphError('network is missing devices')
+
+    def __addAllDevicesToGraph(self, deviceList: List[str]) -> None:
+        for name in deviceList: self.devices[name] = DiagramNode(name)
+
+    def __addAllLinksToGraph(self, links: List[Tuple[str,str]]) -> None:
+        for (nm1, nm2) in links: 
+            if nm1 not in self.devices:
+                raise DiagramGraphError('Device ' + nm1 + ' not found in Graph devices')                
+            elif nm2 not in self.devices:
+                raise DiagramGraphError('Device ' + nm2 + ' not found in Graph devices')
+            else:
+                self.devices[nm1].addNeighbor(self.devices[nm2])
+
     def toString(self) -> str:
         dvcList: str = ''
         if len(self.deviceList.keys()) > 0:
@@ -353,4 +360,4 @@ class DiagramGraph(DiagramEntity):
         return 'Graph: { rootDevice: ' + self.root + ' | devices: [' + dvcList + ']}'
 
     def toShortString(self) -> str:
-        return '[ root: ' + self.root + ', ' + str(len(self.devceList)) + 'devices ]'
+        return '[ root: ' + self.root.deviceName + ', ' + str(len(self.devices)) + 'devices ]'
