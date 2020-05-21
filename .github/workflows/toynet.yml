@@ -1,6 +1,6 @@
 
 name: Test ToyNet Backend
-on: push
+on: [push, pull_request]
 
 jobs:
   test:
