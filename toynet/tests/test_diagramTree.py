@@ -124,10 +124,14 @@ class TestDiagramTreeMethods(unittest.TestCase):
 
         self.assertEqual(len(tree.routers), 3)
         self.assertEqual(len(tree.subnets), 2)
-        self.assertEqual(len(tree.subnets[0].switches), 1)
-        self.assertEqual(len(tree.subnets[0].hosts), 1)
-        self.assertEqual(len(tree.subnets[1].switches), 3)
-        self.assertEqual(len(tree.subnets[1].hosts), 4)
+
+        if len(tree.subnets[0].switches) > 1: (bigSbntIdx, smallSbntIdx) = (0,1)
+        else: (bigSbntIdx, smallSbntIdx) = (1,0)
+           
+        self.assertEqual(len(tree.subnets[smallSbntIdx].switches), 1)
+        self.assertEqual(len(tree.subnets[smallSbntIdx].hosts), 1)
+        self.assertEqual(len(tree.subnets[bigSbntIdx].switches), 3)
+        self.assertEqual(len(tree.subnets[bigSbntIdx].hosts), 4)
         self.assertEqual(len(fr['routers']) + len(fr['switches']) + len(fr['hosts']), 0)
         self.assertEqual(len(tree.primaryLinks), 11)
         self.assertEqual(len(tree.secondaryLinks), 2)
