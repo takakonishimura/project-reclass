@@ -8,7 +8,15 @@
 
 [Packer by HashiCorp](https://www.packer.io/) is a lightweight open source tool for creating identical machine images for multiple platforms from a single source configuration. It can also integrate with configuration management (Chef, Puppet).
 
-### Deployment Process of Developer Boxes
+We plan to move to a CI/CD pipeline using entirely [Docker](https://www.docker.com/why-docker) containers. This will:
+1) Decouple ourselves from AWS while still hosting on AWS
+2) Allow lightweight development on desktops with while maintaining consistency across platforms
+3) Increase shipping speed and reliable deployments by doing away with discrepant computing enviornments or conflicting dependencies
+4) Allow for multiple instances of Mininet to run on the same machine, cutting costs without introducing risk.
+
+We currently use [GitHub Actions](https://github.com/takakonishimura/project-reclass/blob/master/toynet/.github/workflows/toynet.yml) to trigger our unittests `on: push` and `on: pull_request` for `python3.7` and `python3.8`.
+
+### Deployment Process of EC2 Developer Boxes
 
 <span>
 <kbd> <img src="/images/infra_packer.png" height=160 width=400/> </kbd>
@@ -22,14 +30,6 @@ In ToyNet, we install mingrammer's `Diagrams` on top of `Ubutu 18.04`. Packer br
 <kbd> <img src="/images/infra_ssh.png" height=250 width=220/> </kbd>
 
 For the new developer to login to their box, all that is left is to create an IAM User for them and send them the pem file. See [Getting Started Tutorial](https://github.com/takakonishimura/project-reclass/blob/master/toynet/ONBOARDING.md).
-
-### Future Projects
-
-We plan to move to [Docker](https://www.docker.com/why-docker) containers. This will:
-1) Decouple ourselves from AWS while still hosting on AWS
-2) Allow lightweight development on desktops with while maintaining consistency across platforms
-3) Increase shipping speed and reliable deployments by doing away with discrepant computing enviornments or conflicting dependencies
-4) Allow for multiple instances of Mininet to run on the same machine, cutting costs without introducing risk.
 
 # Tutorials
 
