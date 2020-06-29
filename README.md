@@ -61,3 +61,4 @@ Check out these [project ideas](https://docs.google.com/presentation/d/1HbHX3fKu
 
 * Takako Nishimura
 * Enmanuel de la Nuez
+* steven waldron 
