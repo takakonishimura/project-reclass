@@ -56,3 +56,8 @@ Check out these [project ideas](https://docs.google.com/presentation/d/1HbHX3fKu
 <kbd> <img src="/images/curriculum_mission.png" height=250 width=400/> </kbd>
 
 * [Designing a Physical Network](https://docs.google.com/presentation/d/1fpG_s0Pqr4XgWSZrYC2FtDH_dzbDq5GSbDORqG25Igc/edit?usp=sharing)
+
+# Contributor
+
+* Takako Nishimura
+* Enmanuel de la Nuez
