@@ -1,0 +1,2 @@
+docker pull iwaseyusuke/mininet
+docker run -it --rm --privileged -v $PWD/test.py:/test.py iwaseyusuke/mininet
