@@ -1,8 +1,6 @@
 docker pull iwaseyusuke/mininet
-docker run -it --rm --privileged -v $PWD/mininetA.py:/mininetA.py iwaseyusuke/mininet
+docker run -it --rm --privileged -v $PWD/mininetA.py:/root/mininetA.py iwaseyusuke/mininet
 
->> cd /
->> ls
 >> python mininetA.py
 
 mininet >> h1 ping h2
