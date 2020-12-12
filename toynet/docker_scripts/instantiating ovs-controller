@@ -1,1 +1,0 @@
-sudo docker run --privileged -it -v $PWD/mininetA.py:/mininetA.py ciena/mininet /mininetA.py -v /usr/bin/ovs-controller:/usr/bin/ovs-controller
