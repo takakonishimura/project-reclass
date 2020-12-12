@@ -1,6 +1,15 @@
 docker pull iwaseyusuke/mininet
+
 docker run -it --rm --privileged -v $PWD/mininetA.py:/root/mininetA.py iwaseyusuke/mininet
 
 >> python mininetA.py
-
 mininet >> h1 ping h2
+
+
+docker run -it --rm --privileged -v $PWD/mininetB.py:/root/mininetB.py iwaseyusuke/mininet
+
+>> python mininetB.py
+mininet >> h3 ping h4
+mininet >> h3 ping 192.168.2.1 # Test of isolation (want fail)
+mininet >> h3 ping h1 # Test of isolation (want fail)
+
